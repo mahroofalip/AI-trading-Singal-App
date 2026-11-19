@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aurum — Gold Trading Terminal</title><link rel="stylesheet" href="/style.css">
+<script src="https://unpkg.com/lightweight-charts@4.2.2/dist/lightweight-charts.standalone.production.js"></script>
+</head><body>
+<div class="app-shell">
+<aside class="sidebar">
+ <div class="brand"><div class="brand-mark">Au</div><div><b>AURUM</b><small>TRADING INTELLIGENCE</small></div></div>
+ <div class="side-label">WORKSPACE</div>
+ <button class="nav active" data-page="simple"><span>◈</span> Simple dashboard</button>
+ <button class="nav" data-page="detailed"><span>▥</span> Detailed analysis</button>
+ <button class="nav" data-page="risk"><span>◉</span> Risk calculator</button>
+ <div class="side-bottom"><div class="connection"><i id="connDot"></i><span id="connText">Local engine running</span></div><small>LOCAL • ANALYSIS ONLY</small></div>
+</aside>
+<main class="main">
+ <header class="topbar"><div><div class="eyebrow">MARKET OVERVIEW / METALS</div><h1>Gold <span class="muted">/ US Dollar</span></h1></div>
+ <div class="top-actions"><span class="source-pill" id="sourcePill">DEMO FEED</span><button class="btn ghost" id="demoBtn">Use demo data</button><label class="btn ghost file-btn">Import MT5 CSV<input id="csvFile" type="file" accept=".csv,.txt"></label><span class="avatar">A</span></div></header>
+ <section class="page active" id="page-simple">
+  <div class="hero-row"><div><div class="eyebrow">CURRENT MARKET PRICE</div><div class="price-line"><strong id="price">—</strong><span class="muted">XAUUSD.vxc</span></div><div class="subline">Last update <span id="updated">—</span></div></div>
+   <div class="signal-card wait" id="signalCard"><div class="eyebrow">MULTI-TIMEFRAME DECISION</div><div class="signal-main" id="signalText">WAIT</div><div id="signalDesc">Waiting for market data</div></div></div>
+  <div class="grid four" id="tfCards"></div>
+  <div class="grid two main-grid">
+   <section class="panel chart-panel"><div class="panel-head"><div><h2>Price action</h2><p>Latest M1 candles • XAUUSD</p></div><span class="tag">M1</span></div><div id="simpleChart" class="chart"></div></section>
+   <section class="panel"><div class="panel-head"><div><h2>Trade guidance</h2><p>Why the engine reached this status</p></div><span class="tag">LIVE ANALYSIS</span></div><div id="guidance" class="guidance"></div><div class="warning-box" id="warnings"></div></section>
+  </div>
+  <section class="panel trade-plan"><div class="panel-head"><div><h2>Trade plan — entry, stop & targets</h2><p>Structure-based planning levels from recent M5 candles. Not broker orders.</p></div><span class="tag">PROPOSED LEVELS</span></div><div id="tradePlan" class="plan-grid"><div class="empty">Waiting for aligned market conditions.</div></div></section>
+  <div class="grid two">
+   <section class="panel"><div class="panel-head"><div><h2>Market structure</h2><p>Preliminary swing-based structure checks</p></div><span class="tag">M5 / M15</span></div><div id="structureSummary" class="indicator-list"></div></section>
+   <section class="panel"><div class="panel-head"><div><h2>Rule alignment</h2><p>Share of configured filters currently aligned — not a win probability</p></div><span class="tag">CHECKLIST</span></div><div id="confidence" class="confidence-panel">Waiting for analysis…</div></section>
+  </div>
+  <section class="panel"><div class="panel-head"><div><h2>Economic news warning</h2><p>Calendar integration status</p></div><span class="tag">PROVIDER NOT CONNECTED</span></div><div class="warning-box" id="newsWarning">News calendar is not connected. Check a trusted economic calendar manually before trading, especially around high-impact USD events. This section does not currently receive live news.</div></section>
+  <div class="notice"><b>Decision support, not a trade instruction.</b> A BUY/SELL setup means indicators are aligned; wait for your own price-action confirmation and define risk before entering.</div>
+ </section>
+ <section class="page" id="page-detailed">
+  <div class="section-title"><div><div class="eyebrow">TECHNICAL WORKSPACE</div><h2>Detailed market analysis</h2><p>Trend, momentum, volatility and candle structure across four timeframes.</p></div><span class="tag">XAUUSD.vxc</span></div>
+  <div class="grid four" id="detailTf"></div>
+  <div class="grid two">
+   <section class="panel chart-panel"><div class="panel-head"><div><h2>Advanced price chart</h2><p>M1 candles and moving averages</p></div><span class="tag">PRICE</span></div><div id="detailChart" class="chart tall"></div></section>
+   <section class="panel"><div class="panel-head"><div><h2>Indicator readings</h2><p>Latest calculated values</p></div></div><div id="indicators" class="indicator-list"></div></section>
+  </div>
+  <section class="panel"><div class="panel-head"><div><h2>Signal checklist</h2><p>Conditions that must align before a setup is considered</p></div></div><div id="checklist" class="checklist"></div></section>
+  <section class="panel"><div class="panel-head"><div><h2>Local trade journal</h2><p>Entries are saved in this browser only</p></div><span class="tag">LOCAL STORAGE</span></div>
+   <div class="journal-form">
+    <label>Side<select id="jSide"><option>BUY</option><option>SELL</option></select></label>
+    <label>Entry<input id="jEntry" type="number" step="0.01" placeholder="Entry price"></label>
+    <label>Stop loss<input id="jSL" type="number" step="0.01" placeholder="Stop loss"></label>
+    <label>Take profit<input id="jTP" type="number" step="0.01" placeholder="Take profit"></label>
+    <label>Result<select id="jResult"><option>OPEN</option><option>WIN</option><option>LOSS</option><option>BREAKEVEN</option></select></label>
+    <button class="btn primary" id="saveJournal">Save journal entry</button>
+   </div><div id="journalRows" class="journal-list">No trades recorded.</div>
+  </section>
+  <section class="panel"><div class="panel-head"><div><h2>Method notes</h2><p>How to interpret the analysis</p></div></div><div class="method-grid"><div><b>H1 — Direction</b><p>EMA 50/200 relationship and closing price define the broad directional bias.</p></div><div><b>M15 — Momentum</b><p>RSI and MACD histogram show momentum. RSI extremes are warnings, not reversal orders.</p></div><div><b>M5 — Setup</b><p>EMA 20/50 alignment is a trend filter, not a substitute for support, resistance or structure.</p></div><div><b>M1 — Timing</b><p>Use the chart to inspect the actual entry trigger. This prototype does not certify a liquidity sweep or BOS.</p></div></div></section>
+ </section>
+ <section class="page" id="page-risk">
+  <div class="section-title"><div><div class="eyebrow">CAPITAL PROTECTION</div><h2>Position & risk calculator</h2><p>Estimate trade exposure before opening a position.</p></div></div>
+  <div class="grid two">
+   <section class="panel form-panel"><h2>Trade parameters</h2>
+    <label>Account balance (USC)<input id="balance" type="number" value="75000" min="0"></label>
+    <label>Risk per trade (%)<input id="riskPct" type="number" value="0.5" min="0.1" max="2" step="0.1"></label>
+    <label>Stop-loss distance (Gold price units)<input id="slDistance" type="number" value="2" min="0.01" step="0.1"></label>
+    <label>Contract size (oz per lot)<input id="contract" type="number" value="1" min="0.01" step="0.01"></label>
+    <label>Proposed volume (lots)<input id="volume" type="number" value="1" min="0.01" step="0.01"></label>
+    <label>Leverage (e.g. 700 for 1:700)<input id="leverage" type="number" value="700" min="1"></label>
+    <button class="btn primary" id="calcBtn">Calculate exposure</button>
+    <p class="tiny">Cent-account conversion assumes 100 USC = 1 USD. Confirm the contract size, leverage tier and margin factor in your Valetax MT5 symbol specification.</p>
+   </section>
+   <section class="panel"><h2>Estimated results</h2><div class="result-stack">
+    <div class="result"><span>Risk budget</span><b id="riskBudget">—</b></div><div class="result"><span>Estimated stop loss</span><b class="red" id="stopRisk">—</b></div><div class="result"><span>Risk as % of balance</span><b id="riskActual">—</b></div><div class="result"><span>Estimated margin</span><b id="marginReq">—</b></div><div class="result"><span>Balance after stop</span><b id="afterStop">—</b></div>
+   </div><div class="warning-box">Margin is not your maximum loss. A stop can slip, spreads can widen and actual broker margin may differ. This calculator is an estimate, not a broker quote.</div></section>
+  </div>
+ </section>
+ <footer> AURUM TERMINAL <span>Local prototype • No trade execution • Verify broker specifications</span></footer>
+</main></div>
+<script src="/app.js"></script></body></html>
